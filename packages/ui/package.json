@@ -1,0 +1,12 @@
+{
+  "name": "@alphadock/ui",
+  "version": "0.0.0",
+  "private": true,
+  "types": "src/index.ts",
+  "exports": {
+    ".": "./src/index.ts"
+  },
+  "peerDependencies": {
+    "react": "^18.3.1"
+  }
+}

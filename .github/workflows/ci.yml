@@ -1,0 +1,13 @@
+# PR: lint + type + test + build — AlphaDock_Repo_Guide §1.1
+name: ci
+on:
+  pull_request:
+  push:
+    branches: [main, develop]
+jobs:
+  placeholder:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Placeholder
+        run: echo "Add web lint/build, API ruff/pytest, turbo pipeline."

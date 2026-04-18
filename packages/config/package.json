@@ -1,0 +1,6 @@
+{
+  "name": "@alphadock/config",
+  "version": "0.0.0",
+  "private": true,
+  "description": "Shared ESLint + TypeScript + Prettier configs (Repo Guide §1.1)."
+}
