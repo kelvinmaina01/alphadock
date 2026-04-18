@@ -57,6 +57,93 @@ AlphaDock eliminates every one of these barriers.
 
 ---
 
+## ◈ Ecosystem map: AlphaFold vs AlphaDock
+
+Read this like a **Grafana-style dashboard row**: three **panels** with different **severities** — green for what **DeepMind’s AlphaFold family** largely unlocked at scale, amber for what **small-molecule workflows** still wrestle with, and blue for the **AlphaDock** product layer that sits **downstream** of structure prediction (complementary, not a replacement).
+
+```mermaid
+flowchart LR
+  subgraph P1["Panel A — sequence → structure (DeepMind / AlphaFold family)"]
+    direction TB
+    SEQ([Amino-acid sequence])
+    AF[AlphaFold-class prediction]
+    SRC[(Public structure sources<br/>AlphaFold DB · PDB · …)]
+    SEQ --> AF --> SRC
+  end
+
+  subgraph P2["Panel B — ligand → decision (still hard + toolchain-heavy)"]
+    direction TB
+    LIG([Small-molecule input])
+    POS[Pose search · scoring · reranking]
+    MULTI[Selectivity · resistance · ADMET<br/>batch screening · uncertainty]
+    OUT[Design cycles + assays (ground truth)]
+    LIG --> POS --> MULTI --> OUT
+  end
+
+  subgraph P3["Panel C — AlphaDock (workbench + agent)"]
+    direction TB
+    UI[Browser workstation · live jobs]
+    AGT[Tool-backed copilot]
+    RPT[Interpretation + reports]
+    UI --> AGT --> RPT
+  end
+
+  SRC -->|receptor / pocket context| POS
+  POS --> UI
+  RPT -.->|annotated hypotheses| OUT
+  MULTI -.->|human-in-the-loop| OUT
+
+  style P1 fill:#0b1220,stroke:#22c55e,stroke-width:2px,color:#e5e7eb
+  style P2 fill:#0b1220,stroke:#f59e0b,stroke-width:2px,color:#e5e7eb
+  style P3 fill:#0b1220,stroke:#38bdf8,stroke-width:2px,color:#e5e7eb
+  style SEQ fill:#052e16,stroke:#4ade80,color:#dcfce7
+  style AF fill:#14532d,stroke:#22c55e,color:#ecfdf5
+  style SRC fill:#14532d,stroke:#22c55e,color:#ecfdf5
+  style LIG fill:#422006,stroke:#fb923c,color:#ffedd5
+  style POS fill:#713f12,stroke:#fbbf24,color:#fffbeb
+  style MULTI fill:#713f12,stroke:#fbbf24,color:#fffbeb
+  style OUT fill:#422006,stroke:#fb923c,color:#ffedd5
+  style UI fill:#172554,stroke:#60a5fa,color:#dbeafe
+  style AGT fill:#312e81,stroke:#818cf8,color:#eef2ff
+  style RPT fill:#164e63,stroke:#22d3ee,color:#ecfeff
+```
+
+<details>
+<summary><strong>Monochrome ASCII</strong> (for terminals / exports where Mermaid is unavailable)</summary>
+
+```
+┌──────────────────────────────────────────────────────────────────────────────────────────┐
+│                    DeepMind-class models vs AlphaDock (same pipeline, different layer) │
+└──────────────────────────────────────────────────────────────────────────────────────────┘
+
+SEQUENCE ──► 3D PROTEIN STRUCTURE          SMALL MOLECULE ──► POSES / RANKS / DESIGN CYCLES
+     │                         │                                      │
+     │   LARGELY ADDRESSED     │                                      │   STILL WORKFLOW + SCIENCE
+     │   at scale & speed      │                                      │   (needs tools + rigor)
+     v                         v                                      v
+┌─────────────┐         ┌─────────────┐                        ┌─────────────────────────────┐
+│  DeepMind   │         │   Unlock    │                        │        AlphaDock            │
+│  AlphaFold  │────────►│  Models for │                        │  Product layer on open      │
+│  (family)   │         │  targets &  │                        │  engines + cheminformatics  │
+└─────────────┘         │  hypotheses │                        │  + agentic assistance       │
+                        └──────┬──────┘                        └──────────────┬──────────────┘
+                               │                                              │
+                               │  NOT automatically solved                    │  Aims to improve
+                               v                                              v
+                 ┌──────────────────────────────┐              ┌──────────────────────────────┐
+                 │  Affinity / ranking certainty │              │  Docking lab UX (draw/batch)  │
+                 │  Selectivity / resistance     │              │  Live progress + explanations │
+                 │  ADMET / medchem decisions      │              │  Reports + guard-railed tools │
+                 │  Experimental validation      │              │  No terminal required path    │
+                 └──────────────────────────────┘              └──────────────────────────────┘
+
+Ground truth loop:  assays / medchem  ◄────────────────────────────────────────────────────────
+```
+
+</details>
+
+---
+
 ## ◈ What AlphaDock Does
 
 ```
@@ -79,6 +166,7 @@ Paste a SMILES string  →  Select a protein target  →  Watch your ligand dock
 
 ## ◈ Table of Contents
 
+- [Ecosystem map: AlphaFold vs AlphaDock](#-ecosystem-map-alphafold-vs-alphadock)
 - [Architecture Overview](#-architecture-overview)
 - [System Architecture Diagram](#-system-architecture-diagram)
 - [Data Flow Diagram](#-data-flow--request-lifecycle)
