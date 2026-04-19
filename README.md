@@ -164,9 +164,70 @@ Paste a SMILES string  →  Select a protein target  →  Watch your ligand dock
 
 ---
 
+## ◈ How AlphaDock works (simulated run)
+
+One **end-to-end docking job**, shown as a **time-ordered simulation** (same path as [Single Compound Docking — Full Journey](#single-compound-docking--full-journey), compressed).
+
+```mermaid
+sequenceDiagram
+  autonumber
+  actor U as Browser
+  participant API as FastAPI
+  participant Q as Redis queue
+  participant W as Celery worker
+  participant D as PostgreSQL
+  participant O as S3
+
+  U->>API: POST /api/v1/jobs/ — SMILES, target, box, engine hints
+  API->>D: INSERT docking_jobs — status pending
+  API->>Q: Enqueue dock_molecule
+  API-->>U: job_id
+  U->>API: "WebSocket /ws/jobs/{job_id}"
+  API->>Q: Subscribe pub/sub job channel
+  Q-->>W: Dequeue task
+  W->>D: Load job, molecule, protein metadata
+  W->>O: Fetch prepared receptor PDB
+  Note over W: Ligand 3D prep · pocket check · engine select Vina or GNINA or GPU route
+  loop Streaming poses
+    W->>Q: PUBLISH pose_evaluated — score, RMSD, Kd hint
+    Q-->>API: Fan-out event
+    API-->>U: "Live HUD — energy bar, pose index, Mol* sync"
+  end
+  W->>D: INSERT docking_results — poses, interactions, ADMET refs
+  W->>D: UPDATE docking_jobs — status done
+  W->>Q: PUBLISH job_done
+  API-->>U: Final summary — best pose, report payload
+```
+
+<details>
+<summary><strong>ASCII timeline</strong> (same story without Mermaid)</summary>
+
+```
+  YOU (browser)          API + DB              WORKER                WHAT YOU SEE
+       |                    |                    |                        |
+  paste SMILES             |                    |                   2D + props
+       |                    |                    |                        |
+       +------ POST job ----> INSERT pending     |                   job id
+       |                    |  enqueue Celery    |                        |
+       +-- WebSocket open --> subscribe ----------+                        |
+       |                    |                    BLPOP task                |
+       |                    |                    load structures          |
+       |                    |                    prep ligand + dock      |
+       |                    |  <---- PUBLISH -----+ per pose               |
+       |  <---- WS frames --+                    |                   energy + pose
+       |                    |                    PLIP / ADMET / S3       |
+       |                    |  INSERT results ---+                        |
+       |  <---- job_done ---+                    |                   done + results
+```
+
+</details>
+
+---
+
 ## ◈ Table of Contents
 
 - [Ecosystem map: AlphaFold vs AlphaDock](#-ecosystem-map-alphafold-vs-alphadock)
+- [How AlphaDock works (simulated run)](#-how-alphadock-works-simulated-run)
 - [Architecture Overview](#-architecture-overview)
 - [System Architecture Diagram](#-system-architecture-diagram)
 - [Data Flow Diagram](#-data-flow--request-lifecycle)
