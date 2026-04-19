@@ -76,7 +76,7 @@ flowchart LR
     LIG([Small-molecule input])
     POS[Pose search · scoring · reranking]
     MULTI[Selectivity · resistance · ADMET<br/>batch screening · uncertainty]
-    OUT[Design cycles + assays (ground truth)]
+    OUT["Design cycles + assays (ground truth)"]
     LIG --> POS --> MULTI --> OUT
   end
 
