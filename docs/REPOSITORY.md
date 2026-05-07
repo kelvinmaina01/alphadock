@@ -2,7 +2,7 @@
 
 ## Specification documents
 
-Authoritative product and engineering specs should live under [`docs/specifications/`](specifications/README.md) (three documents: architecture, feature spec, repository/setup guide). Add your files there when ready.
+Authoritative product and engineering specs live under [`docs/specifications/`](specifications/README.md). Use that execution pack as the current source of truth for roadmap, frontend design direction, shared contracts, scientific-core sequencing, and delivery gates.
 
 ## What this repo is building
 

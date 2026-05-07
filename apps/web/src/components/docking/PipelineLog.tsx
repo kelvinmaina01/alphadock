@@ -1,4 +1,13 @@
-/** Streaming monospace log — AlphaDock_Repo_Guide §1.2 */
-export function PipelineLog() {
-  return null;
+interface PipelineLogProps {
+  lines: string[];
+}
+
+export function PipelineLog({ lines }: PipelineLogProps) {
+  return (
+    <div className="pipeline-log">
+      {lines.map((line) => (
+        <div key={line}>{line}</div>
+      ))}
+    </div>
+  );
 }

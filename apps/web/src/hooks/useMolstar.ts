@@ -1,4 +1,22 @@
-/** Mol* viewer ref + command methods — AlphaDock_Repo_Guide §1.2 */
+import { useMemo, useRef, useState } from "react";
+
 export function useMolstar() {
-  return { ref: null as null };
+  const ref = useRef<HTMLDivElement | null>(null);
+  const [representation, setRepresentation] = useState("surface");
+  const [selectedPose, setSelectedPose] = useState(1);
+
+  const commands = useMemo(
+    () => ({
+      setRepresentation,
+      focusPose: setSelectedPose,
+    }),
+    [],
+  );
+
+  return {
+    ref,
+    representation,
+    selectedPose,
+    commands,
+  };
 }

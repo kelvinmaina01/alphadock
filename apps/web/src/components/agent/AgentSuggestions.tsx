@@ -1,4 +1,24 @@
-/** Context-aware suggestion chips — AlphaDock_Repo_Guide §1.2 */
-export function AgentSuggestions() {
-  return null;
+interface AgentSuggestionsProps {
+  suggestions: string[];
+  onPick: (value: string) => void;
+}
+
+export function AgentSuggestions({
+  suggestions,
+  onPick,
+}: AgentSuggestionsProps) {
+  return (
+    <div className="agent-suggestions">
+      {suggestions.map((suggestion) => (
+        <button
+          key={suggestion}
+          className="chip"
+          type="button"
+          onClick={() => onPick(suggestion)}
+        >
+          {suggestion}
+        </button>
+      ))}
+    </div>
+  );
 }
